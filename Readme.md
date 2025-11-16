@@ -32,7 +32,6 @@ A simple asynchronous job queue system built with **Golang**, leveraging **Gorou
     ```bash
     go run main.go
     ```
-    *(Alternatively, use the **"Go-Debug"** configuration in VS Code's Run panel).*
 
 3.  **Access the GraphQL Playground:**
     Open your browser and navigate to: **`http://localhost:58579/graphiql`**
@@ -59,13 +58,3 @@ You can test the core functionalities using the following operations in the Grap
 | `GetJobById` | Fetches the full status and attempt count for a specific job ID. |
 | `GetAllJobStatus` | Returns the aggregated count of jobs by status (`PENDING`, `RUNNING`, `FAILED`, `COMPLETED`). |
 
----
-
-## 📐 Architecture Overview
-
-The project adheres to **Clean Architecture** principles, separating concerns into distinct layers:
-
-1.  **Delivery (`delivery`)**: GraphQL Resolvers (Controllers). Receives external requests.
-2.  **Service (`service`)**: Business Logic. Contains the Worker Pool, Job Channel, and Retry Logic.
-3.  **Repository (`repository`)**: Data Access Layer. Handles concurrent-safe persistence to the in-memory map.
-4.  **Entity (`entity`)**: Domain Model. Defines the `Job` structure.
