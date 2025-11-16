@@ -5,8 +5,6 @@ import (
 	_dataloader "jobqueue/delivery/graphql/dataloader"
 	"jobqueue/delivery/graphql/resolver"
 	_interface "jobqueue/interface"
-
-	"jobqueue/entity"
 )
 
 type JobMutation struct {
@@ -14,10 +12,24 @@ type JobMutation struct {
 	dataloader *_dataloader.GeneralDataloader
 }
 
-func (q JobMutation) Enqueue(ctx context.Context, args entity.Job) (*resolver.JobResolver, error) {
-	job := entity.Job{}
+// Enqueue resolves the Enqueue mutation
+func (q JobMutation) Enqueue(ctx context.Context, args struct { // Change args type to struct for input
+	Task string
+}) (*resolver.JobResolver, error) {
+	// Call the service layer to enqueue the job
+	jobID, err := q.jobService.Enqueue(ctx, args.Task)
+	if err != nil {
+		return nil, err
+	}
+
+	// Fetch the created job to return it to the client
+	job, err := q.jobService.GetJobByID(ctx, jobID)
+	if err != nil {
+		return nil, err
+	}
+
 	return &resolver.JobResolver{
-		Data:       job,
+		Data:       *job,
 		JobService: q.jobService,
 		Dataloader: q.dataloader,
 	}, nil
